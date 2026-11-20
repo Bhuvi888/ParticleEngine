@@ -109,7 +109,7 @@ dependencies, web animation, 3d particles
 - [ ] Optional screenshots: `demo/preview-text.png`,
       `demo/light-preview.png`, `demo/light-text.png`,
       `demo/react-preview.png`
-- [x] Live demo URL: https://particle-morph-demo-quzcxs30d0g.qoder.website/demo/index.html
+- [x] Live demo URL: https://particleengine-demo.vercel.app/demo/index.html
       (ink demo: `/demo/light/index.html`, React: `/examples/react-demo/index.html`)
 - [ ] Documentation (convert README.md to HTML or PDF)
 - [ ] Item ZIP (exclude `node_modules`, `.git`, `package-lock.json`);

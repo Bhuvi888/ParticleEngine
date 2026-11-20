@@ -2,7 +2,7 @@
 
 A zero-dependency particle engine with shape morphing, 3D projection, and text/image formations. Works as a React component, as a plain ES module, or as a `<script>` tag on any page.
 
-Live demos: [dark showcase](https://particle-morph-demo-quzcxs30d0g.qoder.website/demo/index.html) · [ink on paper](https://particle-morph-demo-quzcxs30d0g.qoder.website/demo/light/index.html) · [React component](https://particle-morph-demo-quzcxs30d0g.qoder.website/examples/react-demo/index.html)
+Live demos: [dark showcase](https://particleengine-demo.vercel.app/demo/index.html) · [ink on paper](https://particleengine-demo.vercel.app/demo/light/index.html) · [React component](https://particleengine-demo.vercel.app/examples/react-demo/index.html)
 
 - **Zero dependencies** — no GSAP, no runtime libraries
 - **Shape morphing** — smooth tweens between formations with built-in easing

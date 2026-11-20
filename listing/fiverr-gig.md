@@ -58,9 +58,9 @@ exactly what's needed before you order.
 
 ## Demo link (portfolio / attachments, not the gig description)
 
-- Dark showcase: https://particle-morph-demo-quzcxs30d0g.qoder.website/demo/index.html
-- Ink on paper: https://particle-morph-demo-quzcxs30d0g.qoder.website/demo/light/index.html
-- React component: https://particle-morph-demo-quzcxs30d0g.qoder.website/examples/react-demo/index.html
+- Dark showcase: https://particleengine-demo.vercel.app/demo/index.html
+- Ink on paper: https://particleengine-demo.vercel.app/demo/light/index.html
+- React component: https://particleengine-demo.vercel.app/examples/react-demo/index.html
 
 ## Buyer requirements
 
