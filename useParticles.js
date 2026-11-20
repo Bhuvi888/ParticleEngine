@@ -28,7 +28,7 @@ export function useParticles() {
   );
 
   const setTheme = useCallback(
-    (config, progress) => controller?.setTheme(config, progress),
+    (config, options) => controller?.setTheme(config, options),
     [controller]
   );
 

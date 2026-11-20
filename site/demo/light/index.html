@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Particle Morph — Ink Demo</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f4f1e9;
+        --ink: #171512;
+        --vermilion: #b23a2f;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+        background-color: var(--paper);
+        background-image: radial-gradient(
+          120% 100% at 50% 0%,
+          #fbf9f4 0%,
+          #f2eee3 58%,
+          #eae4d5 100%
+        );
+        color: var(--ink);
+        overflow: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+        opacity: 0.05;
+        mix-blend-mode: multiply;
+      }
+      #stage {
+        position: fixed;
+        inset: 0;
+      }
+      #stage canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .mark {
+        position: fixed;
+        top: 34px;
+        left: 34px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        z-index: 10;
+      }
+      .kanji {
+        writing-mode: vertical-rl;
+        font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP",
+          serif;
+        font-size: 46px;
+        line-height: 1;
+        letter-spacing: 0.22em;
+        font-weight: 500;
+      }
+      .seal {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        background: var(--vermilion);
+        color: #f7f3ea;
+        font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP",
+          serif;
+        font-size: 20px;
+        border-radius: 3px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+      }
+      .meta {
+        position: fixed;
+        top: 26px;
+        right: 30px;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(23, 21, 18, 0.45);
+        z-index: 10;
+      }
+      .hud {
+        position: fixed;
+        left: 50%;
+        bottom: 26px;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        width: min(940px, calc(100% - 32px));
+        z-index: 10;
+      }
+      .group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 7px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(23, 21, 18, 0.1);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+      .btn {
+        appearance: none;
+        border: 1px solid transparent;
+        background: transparent;
+        color: #46413a;
+        padding: 8px 15px;
+        font-size: 13px;
+        font-family: inherit;
+        border-radius: 999px;
+        cursor: pointer;
+        letter-spacing: 0.01em;
+        transition: background 0.18s, color 0.18s, border-color 0.18s;
+      }
+      .btn:hover {
+        background: rgba(23, 21, 18, 0.06);
+        color: var(--ink);
+      }
+      .btn:focus-visible {
+        outline: 2px solid var(--vermilion);
+        outline-offset: 2px;
+      }
+      .btn.active {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: #f7f3ea;
+      }
+      .btn.primary {
+        border-color: rgba(178, 58, 47, 0.45);
+        color: var(--vermilion);
+      }
+      .btn.primary:hover {
+        background: rgba(178, 58, 47, 0.08);
+      }
+      input[type="text"] {
+        appearance: none;
+        border: 1px solid rgba(23, 21, 18, 0.16);
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 13px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        width: 160px;
+        outline: none;
+      }
+      input[type="text"]:focus {
+        border-color: rgba(178, 58, 47, 0.6);
+      }
+      label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 12px;
+        color: rgba(23, 21, 18, 0.55);
+        padding: 4px 12px 4px 16px;
+      }
+      input[type="range"] {
+        accent-color: var(--vermilion);
+        width: 96px;
+      }
+      .hint {
+        font-size: 12px;
+        color: rgba(23, 21, 18, 0.4);
+        letter-spacing: 0.02em;
+      }
+      @media (max-width: 660px) {
+        .mark {
+          top: 20px;
+          left: 18px;
+          gap: 14px;
+        }
+        .kanji {
+          font-size: 32px;
+        }
+        .seal {
+          width: 30px;
+          height: 30px;
+          font-size: 16px;
+        }
+        .meta {
+          top: 18px;
+          right: 16px;
+        }
+        .hud {
+          bottom: 14px;
+          gap: 8px;
+        }
+        .hint {
+          display: none;
+        }
+        input[type="text"] {
+          width: 110px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"><canvas id="canvas" aria-hidden="true"></canvas></div>
+
+    <div class="mark">
+      <span class="kanji">陰陽</span>
+      <span class="seal">粒</span>
+    </div>
+
+    <div class="meta" id="stats">&mdash;</div>
+
+    <div class="hud">
+      <div class="group" id="formations" aria-label="Formations"></div>
+      <div class="group">
+        <input
+          id="text-input"
+          type="text"
+          maxlength="14"
+          placeholder="Type a word&hellip;"
+          aria-label="Text formation input"
+        />
+        <button class="btn primary" id="text-btn">Form text</button>
+        <button class="btn" id="theme-btn">Ink &middot; 墨</button>
+      </div>
+      <div class="group">
+        <label>Gravity <input id="gravity" type="range" min="0" max="24" step="1" value="6" /></label>
+        <label>Turbulence <input id="turbulence" type="range" min="0" max="6" step="0.5" value="1.5" /></label>
+      </div>
+      <div class="hint">Move your cursor &mdash; the ink scatters</div>
+    </div>
+
+    <script src="../../dist/particle-morph.global.js"></script>
+    <script src="demo.js"></script>
+  </body>
+</html>

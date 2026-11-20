@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Particle Morph — Demos</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+      }
+      body {
+        min-height: 100vh;
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(90% 60% at 50% 0%, #1c2338 0%, #0b0e18 55%, #05060b 100%)
+            fixed;
+        color: #e8ecf8;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 72px 24px 80px;
+      }
+      .kicker {
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #f5c46b;
+      }
+      h1 {
+        font-size: clamp(30px, 4.6vw, 48px);
+        margin: 12px 0 10px;
+        letter-spacing: -0.02em;
+      }
+      .lede {
+        margin: 0;
+        max-width: 620px;
+        font-size: 17px;
+        line-height: 1.6;
+        color: rgba(232, 236, 248, 0.62);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 40px;
+      }
+      a.card {
+        display: block;
+        padding: 22px;
+        border-radius: 16px;
+        border: 1px solid rgba(232, 236, 248, 0.12);
+        background: rgba(232, 236, 248, 0.03);
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.18s ease, border-color 0.18s ease,
+          transform 0.18s ease;
+      }
+      a.card:hover {
+        background: rgba(232, 236, 248, 0.07);
+        border-color: rgba(245, 196, 107, 0.4);
+        transform: translateY(-2px);
+      }
+      .card h2 {
+        margin: 0 0 6px;
+        font-size: 17px;
+        letter-spacing: -0.01em;
+      }
+      .card p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.55;
+        color: rgba(232, 236, 248, 0.55);
+      }
+      .card .tag {
+        display: inline-block;
+        margin-top: 14px;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #f5c46b;
+      }
+      .swatch {
+        width: 34px;
+        height: 4px;
+        border-radius: 2px;
+        margin-bottom: 14px;
+      }
+      footer {
+        margin-top: 48px;
+        font-size: 13px;
+        color: rgba(232, 236, 248, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <p class="kicker">Particle Morph</p>
+      <h1>Interactive particle animation demos</h1>
+      <p class="lede">
+        A zero-dependency particle engine with shape morphing, text formation,
+        cursor interaction and a 3D depth projection on a plain 2D canvas.
+        Runs as a React component or a single script tag.
+      </p>
+
+      <div class="grid">
+        <a class="card" href="demo/index.html">
+          <div class="swatch" style="background: linear-gradient(90deg, #f5c46b, #9ccdff)"></div>
+          <h2>Dark showcase</h2>
+          <p>
+            Scatter, sphere, grid, ring, helix and yin-yang formations with
+            live palettes, physics sliders and text morphing.
+          </p>
+          <span class="tag">Vanilla engine</span>
+        </a>
+
+        <a class="card" href="demo/light/index.html">
+          <div class="swatch" style="background: linear-gradient(90deg, #b23a2f, #171512)"></div>
+          <h2>Ink on paper</h2>
+          <p>
+            Sumi-ink particles forming a taijitu on washi paper. A quieter,
+            light-background take for editorial and wellness pages.
+          </p>
+          <span class="tag">Yin-yang formation</span>
+        </a>
+
+        <a class="card" href="examples/react-demo/index.html">
+          <div class="swatch" style="background: linear-gradient(90deg, #7f8cff, #f5c46b)"></div>
+          <h2>React component</h2>
+          <p>
+            Two independent instances sized to their containers, controlled
+            through the <code>useParticles</code> hook.
+          </p>
+          <span class="tag">React</span>
+        </a>
+      </div>
+
+      <footer>
+        2,400–2,600 particles per scene · zero runtime dependencies ·
+        respects <code>prefers-reduced-motion</code>
+      </footer>
+    </main>
+  </body>
+</html>

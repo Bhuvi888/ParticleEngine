@@ -1,0 +1,99 @@
+PARTICLE MORPH — COMMERCIAL LICENSE (STANDARD)
+Version 1.0 — 2026-11-14
+
+This is a license template prepared for the sale of this software. It is not
+legal advice. Replace [YOUR NAME / COMPANY] and [JURISDICTION] before selling,
+and have a lawyer review it if your volume justifies it.
+
+Copyright (c) 2026 [YOUR NAME / COMPANY]. All rights reserved.
+
+
+1. GRANT OF LICENSE
+
+Upon payment, you (the "Licensee") are granted a non-exclusive,
+non-transferable, perpetual license to:
+
+  (a) use the Software in unlimited personal and commercial end products
+      (websites, web applications) that you own or build for clients;
+
+  (b) modify the source code as needed for those end products;
+
+  (c) deliver the integrated end product to a client, provided the client
+      does not receive the Software as a separately usable source package.
+
+
+2. RESTRICTIONS
+
+You may not:
+
+  (a) redistribute, sublicense, resell, rent, lease, or share the Software's
+      source code, in whole or in part, as a standalone product;
+
+  (b) publish the source code in public repositories, package registries
+      (e.g. npm), code marketplaces, or code-sharing sites;
+
+  (c) include the Software in a template, theme, UI kit, boilerplate, or
+      component library that is sold or redistributed;
+
+  (d) use the Software to create a competing particle/animation product
+      offered for sale;
+
+  (e) remove or alter this license file from copies of the Software.
+
+Creating unlimited end products for yourself or for clients is permitted.
+If in doubt about a use case, contact the seller for written permission.
+
+
+3. OWNERSHIP
+
+The seller retains all copyright and intellectual property rights in the
+Software. This license grants usage rights only; it does not transfer
+ownership.
+
+
+4. ATTRIBUTION
+
+Attribution is not required, though it is appreciated.
+
+
+5. WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+
+6. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+
+7. SUPPORT
+
+Direct purchases include 6 months of bug-fix support from the date of
+purchase. Support covers defects in the Software as delivered; it does not
+include custom development, integration work, or modifications to your
+website. Response time: within 2 business days.
+
+
+8. REFUNDS
+
+Direct purchases: contact the seller within 14 days of purchase. Purchases
+made through a marketplace are subject to that marketplace's refund policy.
+
+
+9. MARKETPLACE PURCHASES
+
+If you purchased this Software through Envato/CodeCanyon, your license is
+governed by the applicable Envato License (Regular or Extended) and Envato's
+support policy. This license applies to purchases made directly from the
+seller.
+
+
+10. GOVERNING LAW
+
+This license is governed by the laws of [JURISDICTION], without regard to
+conflict-of-law principles.

@@ -1,20 +1,25 @@
-import { ParticleStore } from "./ParticleStore";
-import { ParticleRenderer } from "./ParticleRenderer";
+import { ParticleStore } from "./ParticleStore.js";
+import { ParticleRenderer } from "./ParticleRenderer.js";
 
 /**
- * ParticleEngine - Core animation loop and event handling
- * Manages the render loop, resizing, and mouse tracking
+ * ParticleEngine - Core animation loop and event handling.
+ * Sizes itself to its canvas element (not the window), so it can be embedded
+ * in any container. Tracks the mouse relative to the canvas.
  */
 export class ParticleEngine {
   constructor(canvas, options = {}) {
     this.canvas = canvas;
     this.store = new ParticleStore(options.count || 1500);
-    this.renderer = new ParticleRenderer(canvas);
+    this.renderer = new ParticleRenderer(canvas, {
+      transparent: options.transparent,
+      fov: options.fov,
+    });
 
     this.rafId = null;
     this.isRunning = false;
+    this.interactive = options.interactive !== false;
 
-    // Mouse tracking
+    // Mouse position in canvas-centered coordinates
     this.mouse = { x: 0, y: 0 };
 
     // Bind methods
@@ -25,9 +30,19 @@ export class ParticleEngine {
     // Initial resize
     this.handleResize();
 
-    // Event listeners
-    window.addEventListener("resize", this.handleResize);
-    window.addEventListener("mousemove", this.handleMouseMove);
+    // Resize with the canvas element itself (container-driven)
+    if (typeof ResizeObserver !== "undefined") {
+      this.resizeObserver = new ResizeObserver(this.handleResize);
+      this.resizeObserver.observe(canvas);
+    } else {
+      window.addEventListener("resize", this.handleResize);
+    }
+
+    if (this.interactive) {
+      window.addEventListener("mousemove", this.handleMouseMove, {
+        passive: true,
+      });
+    }
   }
 
   start(onUpdate) {
@@ -36,6 +51,15 @@ export class ParticleEngine {
     this.onUpdate = onUpdate;
     this.lastTime = performance.now();
     this.loop();
+  }
+
+  /** Draw a single static frame (used for prefers-reduced-motion). */
+  renderOnce(onUpdate) {
+    this.stop();
+    if (onUpdate) onUpdate(performance.now() / 1000, 0, this.mouse);
+    this.renderer.tick(0);
+    this.renderer.clear();
+    this.renderer.draw(this.store);
   }
 
   stop() {
@@ -50,15 +74,16 @@ export class ParticleEngine {
     if (!this.isRunning) return;
 
     const time = performance.now();
-    const dt = (time - this.lastTime) / 1000;
+    const dt = Math.min((time - this.lastTime) / 1000, 0.1);
     this.lastTime = time;
 
-    // Call update callback (Layer 2: Controller)
+    // Update callback (Controller)
     if (this.onUpdate) {
       this.onUpdate(time / 1000, dt, this.mouse);
     }
 
     // Render
+    this.renderer.tick(dt);
     this.renderer.clear();
     this.renderer.draw(this.store);
 
@@ -66,19 +91,37 @@ export class ParticleEngine {
   }
 
   handleResize() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    this.renderer.resize(width, height);
+    const width = this.canvas.clientWidth;
+    const height = this.canvas.clientHeight;
+    if (!width || !height) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (
+      width === this.renderer.width &&
+      height === this.renderer.height &&
+      dpr === this.renderer.dpr
+    ) {
+      return;
+    }
+
+    this.renderer.resize(width, height, dpr);
   }
 
   handleMouseMove(e) {
-    // Normalize to center-based coordinates
-    this.mouse.x = e.clientX - window.innerWidth / 2;
-    this.mouse.y = e.clientY - window.innerHeight / 2;
+    const rect = this.canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    // Normalize to canvas-centered coordinates
+    this.mouse.x = e.clientX - rect.left - rect.width / 2;
+    this.mouse.y = e.clientY - rect.top - rect.height / 2;
   }
 
   dispose() {
     this.stop();
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
     window.removeEventListener("resize", this.handleResize);
     window.removeEventListener("mousemove", this.handleMouseMove);
   }

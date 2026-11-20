@@ -1,8 +1,16 @@
-import gsap from "gsap";
+import { generateFormation } from "./utils.js";
+
+const EASES = {
+  linear: (t) => t,
+  "power2.inOut": (t) =>
+    t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
+  "power3.out": (t) => 1 - Math.pow(1 - t, 3),
+  "expo.out": (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+};
 
 /**
- * ParticleController - Motion control and physics simulation
- * Handles formations, morphing, and particle physics
+ * ParticleController - Motion control and physics simulation.
+ * Handles formations, morphing, and particle physics with no external deps.
  */
 export class ParticleController {
   constructor(store, options = {}) {
@@ -16,6 +24,7 @@ export class ParticleController {
 
     // Transition state
     this.transitionObj = { progress: 0 };
+    this.tween = null;
     this.startPositions = new Float32Array(this.count * 3);
     this.endPositions = null;
 
@@ -44,10 +53,12 @@ export class ParticleController {
 
   /**
    * Set theme on the renderer
+   * @param {string|object} config - 'light' | 'dark' | { bg, particle, colorPalette }
+   * @param {object} options - { animate?: boolean }
    */
-  setTheme(config, progress) {
+  setTheme(config, options) {
     if (this.renderer) {
-      this.renderer.setTheme(config, progress);
+      this.renderer.setTheme(config, options);
     }
   }
 
@@ -64,12 +75,17 @@ export class ParticleController {
 
     this.currentFormation = formationKey;
     this.endPositions = target;
+    this.tween = null;
+    this.transitionObj.progress = 1;
 
     for (let i = 0; i < this.count; i++) {
       const i3 = i * 3;
       this.store.x[i] = target[i3];
       this.store.y[i] = target[i3 + 1];
       this.store.z[i] = target[i3 + 2];
+      this.store.vx[i] = 0;
+      this.store.vy[i] = 0;
+      this.store.vz[i] = 0;
     }
   }
 
@@ -77,7 +93,7 @@ export class ParticleController {
    * Smoothly morph to a formation
    * @param {string} formationKey - Name of the formation
    * @param {number} duration - Animation duration in seconds
-   * @param {string} ease - GSAP ease string
+   * @param {string} ease - Ease name ('linear' | 'power2.inOut' | 'power3.out' | 'expo.out')
    */
   morphTo(formationKey, duration = 1.0, ease = "power2.inOut") {
     const target = this.formations[formationKey];
@@ -107,73 +123,31 @@ export class ParticleController {
 
     this.endPositions = target;
     this.transitionObj.progress = 0;
-
-    gsap.killTweensOf(this.transitionObj);
-    gsap.to(this.transitionObj, {
-      progress: 1,
-      duration,
-      ease,
-    });
+    this.tween = {
+      elapsed: 0,
+      duration: Math.max(duration, 0.001),
+      ease: EASES[ease] || EASES["power2.inOut"],
+    };
   }
 
   /**
    * Form text shape from canvas
    * @param {string} text - Text to form
-   * @param {object} options - { fontSize, font }
+   * @param {object} options - { fontSize, font, width, height, duration, ease }
    */
   formText(text, options = {}) {
-    const { fontSize = 160, font = "Space Grotesk" } = options;
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = options.width ?? this.renderer?.width ?? window.innerWidth;
+    const height =
+      options.height ?? this.renderer?.height ?? window.innerHeight;
 
-    // Create temp canvas
-    const cvs = document.createElement("canvas");
-    const ctx = cvs.getContext("2d");
-    cvs.width = width;
-    cvs.height = height;
-
-    // Draw text
-    ctx.font = `900 ${fontSize}px "${font}", sans-serif`;
-    ctx.fillStyle = "white";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(text, width / 2, height / 2);
-
-    // Sample pixels
-    const imageData = ctx.getImageData(0, 0, width, height);
-    const data = imageData.data;
-    const validPoints = [];
-    const skip = 4;
-
-    for (let y = 0; y < height; y += skip) {
-      for (let x = 0; x < width; x += skip) {
-        const alpha = data[(y * width + x) * 4 + 3];
-        if (alpha > 128) {
-          validPoints.push({
-            x: x - width / 2,
-            y: -(y - height / 2),
-            z: 0,
-          });
-        }
-      }
-    }
-
-    // Map to particle positions
-    const pos = new Float32Array(this.count * 3);
-    for (let i = 0; i < this.count; i++) {
-      const i3 = i * 3;
-      const p = validPoints[Math.floor(Math.random() * validPoints.length)] || {
-        x: 0,
-        y: 0,
-        z: 0,
-      };
-      pos[i3] = p.x + (Math.random() - 0.5) * 5;
-      pos[i3 + 1] = p.y + (Math.random() - 0.5) * 5;
-      pos[i3 + 2] = p.z + (Math.random() - 0.5) * 5;
-    }
+    const pos = generateFormation.fromText(text, this.count, {
+      ...options,
+      width,
+      height,
+    });
 
     this.currentFormation = "text";
-    this.morphToTarget(pos, 1.5, "expo.out");
+    this.morphToTarget(pos, options.duration ?? 1.5, options.ease ?? "expo.out");
   }
 
   /**
@@ -187,15 +161,25 @@ export class ParticleController {
    * Main update loop - called every frame by ParticleEngine
    */
   update(time, dt, mouse) {
+    const safeDt = Math.min(dt, 0.05);
+
+    // Advance the morph tween
+    if (this.tween) {
+      this.tween.elapsed += safeDt;
+      const p = Math.min(this.tween.elapsed / this.tween.duration, 1);
+      this.transitionObj.progress = this.tween.ease(p);
+      if (p >= 1) {
+        this.tween = null;
+        this.transitionObj.progress = 1;
+      }
+    }
+
     const t = this.transitionObj.progress;
     const { gravity, friction, turbulence, settlingForce } = this.physics;
 
     // Update wind
     this.physics.windX = Math.sin(time * 0.3) * 2 + Math.sin(time * 0.7) * 1;
     this.physics.windZ = Math.cos(time * 0.4) * 1.5;
-
-    // Clamp dt
-    const safeDt = Math.min(dt, 0.05);
 
     for (let i = 0; i < this.count; i++) {
       const i3 = i * 3;

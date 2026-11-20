@@ -39,7 +39,7 @@ export const generateFormation = {
         if (alpha > 128) {
           validPoints.push({
             x: x - width / 2,
-            y: -(y - height / 2),
+            y: y - height / 2,
             z: 0,
           });
         }
@@ -194,6 +194,67 @@ export const generateFormation = {
       pos[i3 + 1] = y;
       pos[i3 + 2] = Math.sin(angle + strandOffset) * (radius + thickness);
     }
+    return pos;
+  },
+
+  /**
+   * Generate the dark half of the taijitu (yin-yang) symbol.
+   * Designed for dark particles on a light background: the light half is
+   * left unsampled, with both small counter-colored eyes included.
+   * @param {number} count - Number of particles
+   * @param {number} radius - Outer radius
+   * @param {object} options - { eyeRatio }
+   */
+  yinYang(count, radius = 240, options = {}) {
+    const eyeRatio = options.eyeRatio ?? 1 / 6;
+    const R = radius;
+    const headY = R / 2;
+    const eyeR = R * eyeRatio;
+    const inCircle = (x, y, cy, r) => {
+      const dx = x;
+      const dy = y - cy;
+      return dx * dx + dy * dy <= r * r;
+    };
+
+    const pos = new Float32Array(count * 3);
+    let i = 0;
+    let attempts = 0;
+    const maxAttempts = count * 80;
+
+    while (i < count && attempts < maxAttempts) {
+      attempts++;
+      const x = (Math.random() * 2 - 1) * R;
+      const y = (Math.random() * 2 - 1) * R;
+      if (!inCircle(x, y, 0, R)) continue;
+
+      const inHead = inCircle(x, y, headY, R / 2);
+      const inTail = inCircle(x, y, -headY, R / 2);
+      let dark = inHead || (x < 0 && !inTail);
+
+      // Carve the light eye out of the dark head, add the dark eye to the light head
+      if (dark && inCircle(x, y, headY, eyeR)) dark = false;
+      else if (!inHead && inCircle(x, y, -headY, eyeR)) dark = true;
+
+      if (!dark) continue;
+
+      const i3 = i * 3;
+      pos[i3] = x + (Math.random() - 0.5) * 2;
+      pos[i3 + 1] = y + (Math.random() - 0.5) * 2;
+      pos[i3 + 2] = (Math.random() - 0.5) * 10;
+      i++;
+    }
+
+    // Safety fallback: fill any remainder inside the dark head
+    while (i < count) {
+      const angle = Math.random() * Math.PI * 2;
+      const r = Math.sqrt(Math.random()) * (R / 2);
+      const i3 = i * 3;
+      pos[i3] = Math.cos(angle) * r;
+      pos[i3 + 1] = headY + Math.sin(angle) * r;
+      pos[i3 + 2] = 0;
+      i++;
+    }
+
     return pos;
   },
 };

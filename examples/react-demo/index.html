@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Particle Morph — React Demo</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+      }
+      body {
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: #070910;
+        color: #e8ecf8;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 56px 24px 80px;
+      }
+      .kicker {
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #f5c46b;
+      }
+      h1 {
+        font-size: clamp(28px, 4vw, 44px);
+        margin: 10px 0 8px;
+        letter-spacing: -0.02em;
+      }
+      header p {
+        margin: 0;
+        color: rgba(232, 236, 248, 0.55);
+        max-width: 620px;
+        line-height: 1.6;
+      }
+      .stage {
+        position: relative;
+        height: 60vh;
+        min-height: 360px;
+        margin: 36px 0 14px;
+        border-radius: 20px;
+        overflow: hidden;
+        background: radial-gradient(
+          120% 120% at 20% 0%,
+          #1a2136 0%,
+          #0c101c 60%,
+          #070910 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .mini {
+        position: relative;
+        width: min(420px, 100%);
+        height: 240px;
+        border-radius: 16px;
+        overflow: hidden;
+        background: radial-gradient(
+          120% 120% at 80% 0%,
+          #241a2e 0%,
+          #0d0a14 70%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        margin-top: 14px;
+      }
+      .controls {
+        position: absolute;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        z-index: 2;
+        width: calc(100% - 24px);
+      }
+      .group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 6px;
+        border-radius: 999px;
+        background: rgba(10, 13, 24, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(14px);
+      }
+      .btn {
+        appearance: none;
+        border: 1px solid transparent;
+        background: transparent;
+        color: #cdd5ea;
+        font-family: inherit;
+        font-size: 13px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        text-transform: capitalize;
+      }
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+      .btn.primary {
+        border-color: rgba(245, 196, 107, 0.5);
+        color: #f5c46b;
+      }
+      .btn.primary:hover {
+        background: rgba(245, 196, 107, 0.14);
+      }
+      input {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        color: #e8ecf8;
+        font-family: inherit;
+        font-size: 13px;
+        padding: 7px 13px;
+        border-radius: 999px;
+        width: 130px;
+        outline: none;
+      }
+      input:focus {
+        border-color: rgba(245, 196, 107, 0.6);
+      }
+      .status {
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        color: rgba(232, 236, 248, 0.35);
+        padding: 0 10px 0 4px;
+      }
+      .status.ok {
+        color: #7fe0a8;
+      }
+      h2 {
+        font-size: 18px;
+        margin: 34px 0 6px;
+      }
+      .sub {
+        color: rgba(232, 236, 248, 0.5);
+        font-size: 14px;
+        margin: 0 0 10px;
+      }
+      pre {
+        background: #0c101c;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 18px 20px;
+        overflow-x: auto;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #b9c4de;
+      }
+      .tag {
+        color: #f5c46b;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
